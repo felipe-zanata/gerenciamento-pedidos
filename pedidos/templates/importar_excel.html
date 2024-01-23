@@ -1,0 +1,318 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista de Usuários</title>
+    <link href="{% static 'css/importar_excel.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="botoes-geral">
+        <form id="carregarExcelForm" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="file" name="excel_file" id="excel_file" style="display: none;">
+            <label for="excel_file" class="custom-file-upload upload-arquivo-label" id="uploadButton">
+                <i class="fa-solid fa-file-arrow-up upload-arquivo"></i>
+                Upload
+            </label>
+            <select name="tipo_data" id="tipo_data" class="tipo-data" style="display: none;">
+                <option value="normal" selected>Modelo Excel</option>
+                <option value="neo_crm">Neo CRM</option>
+            </select>
+        </form>
+        <input type="text" id="file-name" class="nome-arq-carregado" placeholder="Arquivo para importar" readonly>
+        <div>
+            <button type="button" id="importarExcelBtn" class="importar-dados-botao disabled-button" >
+                <i class="fa-solid fa-file-import importar-dados"></i>
+                Importar Dados
+            </button>
+            <div id="import-confirmation" class="import-popup" style="display: none;">
+                <p>Deseja importar esses dados?</p>
+                <button id="confirm-import" class="btn excluir-confirmar" >
+                    Sim, importar
+                </button>
+                <button class="btn-inverse" id="cancel-import">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="snackbar">Mensagem!</div>
+    <div class="progress-container" >
+        <div class="progress">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" 
+                aria-valuemin="0" aria-valuemax="100" style="width: 0%"> 0%
+            </div>
+        </div>
+    </div>
+    
+    <div id="table-container">
+        <table id="table-logger">
+            <thead>
+                <tr>
+                    <th style="width: 20%;">Data</th>
+                    <th style="width: auto;">Logger</th>
+                    <th style="width: 20%;">Status</th>
+                </tr>
+            </thead>
+            <tbody id="table-logger-body">
+                <tr>
+                    <td style="color: #ccc;">00/00/0000 00:00:00</td>
+                    <td style="text-align: start; color: #ccc;">Progresso do import de dados...</td>
+                    <td style="color: #ccc;">Status do processo</td>
+                </tr>
+            </tbody>
+        </table>
+        
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+    <script>
+        document.getElementById('uploadButton').addEventListener('click', function() {
+            showSnackbar("Carregando arquivo...", 'success');
+        });
+
+        document.getElementById('confirm-import').addEventListener('click', function() {
+            showSnackbar("Importando dados...", 'success');
+        });
+    </script>
+
+    <script>
+        function showSnackbar(message, type) {
+            snackbar.innerText = message;
+            snackbar.classList.add('show');
+            snackbar.classList.add(type);
+            
+            setTimeout(function () {
+                snackbar.classList.remove('show');
+                snackbar.classList.add(type);
+                snackbar.classList.remove('success', 'error');
+            }, 6000);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var inputFile = document.getElementById('excel_file');
+            var importarDadosBtn = document.getElementById('importarExcelBtn');
+            var fileNameInput = document.getElementById('file-name');
+
+            inputFile.addEventListener('change', updateCarregarButtonState);
+
+            function updateCarregarButtonState() {
+                var fileName = inputFile.files[0]?.name;
+                if (fileName) {
+                    fileNameInput.value = fileName;
+                    importarDadosBtn.classList.remove('disabled-button');
+                    importarDadosBtn.disabled = false;
+                } else {
+                    importarDadosBtn.classList.add('disabled-button');
+                    importarDadosBtn.disabled = true;
+                }
+            }
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            function updateFileName(fileName) {
+                $('#file-name').val(fileName);
+                localStorage.setItem('uploadedFileName', fileName);
+                localStorage.setItem('uploadedFileTime', new Date().getTime());
+            }
+
+            var storedFileName = localStorage.getItem('uploadedFileName');
+            var storedTime = localStorage.getItem('uploadedFileTime');
+            if (storedFileName && storedTime) {
+                var currentTime = new Date().getTime();
+                var timeDiff = currentTime - storedTime;
+
+                if (timeDiff > 10000) {
+                    localStorage.removeItem('uploadedFileName');
+                    localStorage.removeItem('uploadedFileTime');
+                } else {
+                    $('#file-name').val(storedFileName);
+                }
+            }
+
+            $('#excel_file').change(function() {
+                var fileName = $(this).val().split('\\').pop();
+                updateFileName(fileName);
+            });
+            
+            $('#importarExcelBtn').on('click', function() {
+                $('#import-confirmation').show();
+            });
+
+            $('#confirm-import').click(function() {
+                localStorage.removeItem('uploadedFileName');
+                localStorage.removeItem('uploadedFileTime');
+                $('#import-confirmation').hide();
+                $('#carregarExcelForm').submit();
+            });
+
+            $('#cancel-import').on('click', function() {
+                $('#import-confirmation').hide();
+            });
+
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+
+            var ultimoProgresso = 0;
+            var ultimoStatus = null;
+
+            $("#carregarExcelForm").submit(function (event) {
+                event.preventDefault();
+
+                limparProgresso();
+                limparTabela();
+
+                var formData = new FormData(this);
+
+                setTimeout(obterProgresso, 500);
+
+                $.ajax({
+                    url: '/import/',
+                    type: 'POST',
+                    data: formData,
+                    dataType: 'json',
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        if (data.success) {
+                            console.log("Importação concluída com sucesso!");
+                            ultimoProgresso = 100;
+                            limparProgresso();
+                        } else if (data.error) {
+                            console.error("Erro durante a importação:", data.error);
+                            limparProgresso();
+                        } else {
+                           console.log("Em progresso...")
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Erro import:", error);
+                        ultimoProgresso = 100;
+                        var errorData = {
+                            'data': obterDataHora(),
+                            'status': status,
+                            'logger': error,
+                            'progress': ultimoProgresso,
+                        };
+                        adicionarLinhaTabela(errorData);
+                        atualizarBarraProgresso(ultimoProgresso);
+                        limparProgresso();
+                    }
+                });
+            });
+
+            
+            function obterProgresso() {
+
+                $.ajax({
+                    url: '/obter_progresso/',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (response) {
+
+                        if (response.data.progress && response.data.progress !== ultimoProgresso) {
+                            adicionarLinhaTabela(response.data);
+                            atualizarBarraProgresso(response.data.progress);
+
+                            if (response.data.progress === 100) {
+                                desativarAnimacaoBarraProgresso();
+                            } else {
+                                setTimeout(obterProgresso, 1000);
+                            }
+                        } else if(response.data.status !== ultimoStatus){
+                            atualizarStatusUltimaLinha(response.data.status);
+                        } else if(ultimoProgresso === 100){  
+                            desativarAnimacaoBarraProgresso();      
+                        } else {
+                            setTimeout(obterProgresso, 1000);
+                        }
+
+                        ultimoProgresso = response.data.progress;
+                        ultimoStatus = response.data.status
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Erro progresso:", error);
+                        ultimoProgresso = 100;
+                        var errorData = {
+                            'data': obterDataHora(),
+                            'status': status,
+                            'logger': error,
+                            'progress': ultimoProgresso,
+                        };
+                        adicionarLinhaTabela(errorData);
+                        atualizarBarraProgresso(ultimoProgresso);
+                        limparProgresso();
+                    }
+                });
+            }
+
+            function limparProgresso() {
+                $.ajax({
+                    url: '/limpar_progresso/',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log("Progresso limpo.");
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Erro ao limpar progresso:", error);
+                    }
+                });
+            }
+
+            function adicionarLinhaTabela(data) {
+                var newRow = '<tr><td>' + data.data + '</td><td style="text-align: start;">' + data.logger + '</td><td>' + data.status + '</td></tr>';
+                $('#table-logger-body').append(newRow);
+            }
+
+            function atualizarStatusUltimaLinha(status) {
+                var ultimaLinha = $('#table-logger-body tr:last');
+
+                ultimaLinha.find('td:last').text(status);
+            }
+
+            function atualizarBarraProgresso(progresso) {
+                var progressBar = $('.progress-bar');
+                progressBar.width(progresso + '%').text(progresso + '%');
+            }
+
+            function desativarAnimacaoBarraProgresso() {
+                var progressBar = $('.progress-bar');
+                progressBar.removeClass('progress-bar-animated');
+            }
+
+            function limparTabela() {
+                $('#table-logger-body').empty();
+            }
+
+            function obterDataHora() {
+                var hoje = new Date();
+                var dia = hoje.getDate().toString().padStart(2, '0');
+                var mes = (hoje.getMonth() + 1).toString().padStart(2, '0');
+                var ano = hoje.getFullYear();
+                var hora = hoje.getHours().toString().padStart(2, '0');
+                var minuto = hoje.getMinutes().toString().padStart(2, '0');
+                var segundo = hoje.getSeconds().toString().padStart(2, '0');
+
+                return `${dia}/${mes}/${ano} ${hora}:${minuto}:${segundo}`;
+            }
+        });
+    </script>
+
+</body>
+</html>
+
+{% endblock %}
+
+

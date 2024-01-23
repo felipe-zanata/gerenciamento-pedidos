@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prime Telefonia</title>
+    {% load static %}
+    <link href="{% static '../static/css/registro.css' %}" rel="stylesheet">
+    <link rel="shortcut icon" href="{%  static 'favicon.ico' %}">
+</head>
+
+<body>
+    <div class="geral">
+        <div class="card-registro">
+            <form action="{% url 'registro' %}" method="post">
+                {% csrf_token %}
+                <div class="registro-container">
+                    <h4 class="faca-login">Cadastrar usuário</h4>
+                    <div class="registro-form">
+                        <div style="display: flex;">
+                            <div>
+                                <label for="first_name_field">Primeiro Nome:</label>
+                                <div class="dados-input">
+                                    <input type="text" id="first_name_field" name="first_name" class="obrigatorio" oninput="this.value = this.value.toUpperCase();">
+                                </div>
+                                {{ user_form.first_name.errors }}
+                            </div>
+                            
+                            <div>
+                                <label class="second-name-label" for="last_name_field">Último Nome:</label>
+                                <div class="dados-input second-name">
+                                    <input type="text" id="last_name_field" name="last_name" class="obrigatorio" oninput="this.value = this.value.toUpperCase();">
+                                </div>
+                                {{ user_form.last_name.errors }}
+                            </div>
+                        </div>
+                        
+                        <label for="email_field">Email:</label>
+                        <div class="dados-input">
+                            <input type="text" id="email_field" name="email" class="obrigatorio" oninput="this.value = this.value.toUpperCase();">
+                        </div>
+                        {{ user_form.email.errors }}
+
+                        <label for="group_field">Nível de Acesso:</label>
+                        <div class="dados-select">
+                            {{ user_form.group }}
+                        </div>
+                        {{ user_form.group.errors }}
+                        
+                        <label for="username_field">Usuário:</label>
+                        <div class="dados-input">
+                            <input type="text" id="username_field" name="username" class="obrigatorio" oninput="this.value = this.value.toUpperCase();">
+                        </div>
+                        {{ user_form.username.errors }}
+                        
+                        <label for="password1_field">Senha:</label>
+                        <!-- <div class="dados-input">
+                            {{ user_form.password1 }}
+                            <button class="toggle-button custom-button" type="button">
+                                <i class="fas fa-eye" style="display: none;"></i>
+                                <i class="fas fa-eye-slash"></i>
+                            </button>
+                        </div>
+                        {{ user_form.password1.errors }} -->
+                        
+                        <!-- <label for="password2_field">Confirmação de senha:</label>
+                        <div class="dados-input">
+                            {{ user_form.password2 }}
+                            <button class="toggle-button custom-button" type="button">
+                                <i class="fas fa-eye" style="display: none;"></i>
+                                <i class="fas fa-eye-slash"></i>
+                            </button>
+                        </div>
+                        {{ user_form.password2.errors }} -->
+                        <div class="dados-input">
+                            <input type="password" id="password1_field" name="password1">
+                            <button class="toggle-button custom-button" type="button" onclick="togglePassword('password1_field', 'eyeIcon1', 'eyeSlashIcon1')">
+                                <i class="fas fa-eye" id="eyeIcon1" style="display: none;"></i>
+                                <i class="fas fa-eye-slash" id="eyeSlashIcon1"></i>
+                            </button>
+                        </div>
+                        {{ user_form.password1.errors }}
+                        
+                        <label for="password2_field">Confirmação de senha:</label>
+                        <div class="dados-input">
+                            <input type="password" id="password2_field" name="password2">
+                            <button class="toggle-button custom-button" type="button" onclick="togglePassword('password2_field', 'eyeIcon2', 'eyeSlashIcon2')">
+                                <i class="fas fa-eye" id="eyeIcon2" style="display: none;"></i>
+                                <i class="fas fa-eye-slash" id="eyeSlashIcon2"></i>
+                            </button>
+                        </div>
+                        {{ user_form.password2.errors }}
+                        
+
+                        <div class="registrar-button-container" style="display: flex;">
+                            <input type="submit" value="Cadastrar" class="registrar-button">
+                            <a href="/login/" class="voltar">Voltar</a>
+                        </div>
+                    </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>
+
+<script>
+function togglePassword(passwordFieldId, eyeIconId, eyeSlashIconId) {
+    var passwordInput = document.getElementById(passwordFieldId);
+    var eyeIcon = document.getElementById(eyeIconId);
+    var eyeSlashIcon = document.getElementById(eyeSlashIconId);
+
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        eyeIcon.style.display = 'block';
+        eyeSlashIcon.style.display = 'none';
+    } else {
+        passwordInput.type = 'password';
+        eyeIcon.style.display = 'none';
+        eyeSlashIcon.style.display = 'block';
+    }
+}
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prime Telefonia</title>
+  {% load static %}
+  <link href="{% static '../static/css/login.css' %}" rel="stylesheet">
+  <link href="{% static 'css/custom-fonts.css' %}" rel="stylesheet">
+  <link rel="shortcut icon" href="{%  static 'favicon.ico' %}">
+</head>
+<body>
+  <div class="split-screen">
+    <div class="left-side">
+      <div>
+      <form action="{% url 'login' %}" method="post">
+        {% csrf_token %}
+        <div class="img-svg">
+          <img src="{% static 'logo_prime.png' %}" alt="a">
+        </div>
+        <div class="login-container">
+          <h1>Bem vindo de volta!</h1>
+          <h4>Faça o login em sua conta para acessar</h4>
+          <div class="login-form">
+            <input type="text" class="dados-input" name="username" placeholder="Usuário" >
+            <input type="password" class="dados-input" name="password" placeholder="Senha">
+            <div>
+              {% if messages %}
+                <ul class="messages">
+                  {% for message in messages %}
+                  <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                  {% endfor %}
+                </ul>
+                <script>
+                  setTimeout(function () {
+                    document.querySelector('.messages').style.display = 'none';
+                  }, 8000);
+                </script>
+              {% endif %}
+            </div>
+          <div class="login-button-container">
+            <button class="login-button">Entrar</button>
+          </div>
+          <div class="lembrar-esqueci">
+            <a href="/reset_password/" class="reset-password">Esqueci a senha</a>
+          </div>
+        </div>
+        <h5 >Não tem login?&nbsp;&nbsp;
+          <span class="fale-gestor">Fale com seu gestor</span>
+        </h5>
+      </form>
+    </div>
+  </div>
+</body>
+
+</html>

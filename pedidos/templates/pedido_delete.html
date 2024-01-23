@@ -1,0 +1,609 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% load static %}
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+  <link href="{% static '../static/css/pedido_delete.css' %}" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/TableExport/5.2.0/js/tableexport.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+  <title>Pedidos (Prime)</title>
+</head>
+<Body>
+  <div id="header">
+    <div class="header-container">
+      <form method="GET" action="{% url 'pedidos_deletados' %}">
+        <div class="filtro-container">
+          <div class="filtro-section">
+            <input type="date" name="carimbo_data_hora" placeholder="Carimbo" title="Carimbo Data/Hora" value="{{ request.GET.carimbo_data_hora }}">
+          </div>
+          <div class="filtro-section">
+            <input type="text" name="equipe" placeholder="Equipe" title="Equipe" value="{{ request.GET.equipe }}">
+          </div>
+          <div class="filtro-section">
+            <input type="text" name="consultor" placeholder="Consultor" title="Consultor" value="{{ request.GET.consultor }}">
+          </div>
+          <div class="filtro-section">
+            <input type="text" name="status" placeholder="Status" title="Status" value="{{ request.GET.status }}">
+          </div>
+          <div class="filtro-section">
+            <input type="text" name="status_pn" placeholder="Status PN" title="Status PN" value="{{ request.GET.status_pn }}">
+          </div>
+        </div>
+
+        <div class="filtro-container">
+          <div class="filtro-section">
+            <input type="date" name="data" placeholder="Data" title="Data" value="{{ request.GET.data }}">
+          </div>
+          <div class="filtro-section">
+            <input type="text" name="atividade" placeholder="Atividade" title="Atividade" value="{{ request.GET.atividade }}">
+          </div>
+          <div class="filtro-section">
+            <input type="text" name="produto" placeholder="Produto" title="Produto" value="{{ request.GET.produto }}">
+          </div>
+          <div class="filtro-section">
+            <input type="text" name="filtro_geral" placeholder="Filtro Geral (texto)" title="Filtro de informações para os campos de texto." value="{{ request.GET.filtro_geral }}">
+          </div>
+          <button type="submit" class="btn">
+            <i class="fa fa-filter"></i>Filtrar
+          </button>
+          <a href="{% url 'pedidos_deletados' %}" class="btn-inverse">
+            <i class="fa-solid fa-filter-circle-xmark"></i>Limpar
+          </a>
+        </div>
+      </form>
+    </div>
+
+    <div class="header-container">
+        <button id="excluirlinhas" class="btn-icone excluir" style="position: relative;"  disabled>
+          <i class="fa-solid fa-trash-can"></i>Excluir
+        </button>
+        <div id="delete-confirmation" class="delete-dropdown" style="position: absolute; display: none;">
+          <p>Excluir <span id="delete-count">0</span> linha(s)?</p>
+          <button class="btn" id="confirm-delete">Sim, excluir</button>
+          <button class="btn-inverse" id="cancel-delete">Cancelar</button>
+        </div>
+        <button id="exportButton" class="btn-icone exportar" style="position: relative;">
+          <i class="fa-solid fa-file-arrow-down"></i>Exportar
+        </button>
+        <div id="export-confirmation" class="delete-dropdown" style="position: absolute; display: none;">
+          <p>Exportar dados para CSV?</p>
+          <button class="btn" id="confirm-export">Sim, Exportar</button>
+          <button class="btn-inverse" id="cancel-export">Cancelar</button>
+        </div>
+        <button id="restaurarLinhas" class="btn-icone" style="position: relative;" disabled>
+          <i class="fa-solid fa-trash-can-arrow-up"></i></i>Restaurar
+        </button>
+        <div id="restore-confirmation" class="delete-dropdown" style="position: absolute; display: none;">
+          <p>Restaurar dados deletados?</p>
+          <button class="btn" id="confirm-restore">Sim, Restaurar</button>
+          <button class="btn-inverse" id="cancel-restore">Cancelar</button>
+        </div>
+    </div>
+</div>
+  <div id="table-container">
+    <table class="table table-vertical" id="tabela-pedidos">
+      <thead>
+        <tr class="title">
+          <th class="id-check"><input type="checkbox" class="check-pedido" id="select-all" onclick="selectAll()"></th>
+          <th class="col" scope="col" style="padding-right: 2px; min-width: 30px;"><i class="fa-solid fa-sort"></i></th> 
+          <th scope="col">Carimbo Data/Hora</th>
+          <th scope="col">Equipe</th>
+          <th scope="col">Consultor</th>
+          <th scope="col">Cargo</th> 
+          <th scope="col">Data</th>
+          <th scope="col">Atividade</th>
+          <th scope="col">CNPJ</th>
+          <th scope="col">Razão Social</th>
+          <th scope="col">Família de Produtos</th>
+          <th scope="col">Status</th>
+          <th scope="col">Status PN</th>
+          <th scope="col">Produto</th>
+          <th scope="col">Qtde</th>
+          <th scope="col">Valor</th>
+          <th scope="col">Motivo cancelamento</th>
+          <th scope="col">Simulação</th>
+          <th scope="col">Cotação</th>
+          <th scope="col">Pedido</th>
+          <th scope="col">Crédito</th>
+          <th scope="col">BKO Reprovado</th>
+          <th scope="col">Data ativação</th>
+          <th scope="col">Tipo agenda</th>
+          <th scope="col">Data agenda</th>
+          <th scope="col">Hora agenda</th>
+          <th scope="col">Campanha</th>
+          <th scope="col">Data campanha</th>
+          <th scope="col">Nome Gestor</th>
+          <th scope="col">Celular Gestor</th>
+          <th scope="col">E-mail Gestor</th>
+          <th scope="col">Observação 1</th>
+          <th scope="col">Observação 2</th>
+          <th scope="col">Data CQV</th>
+          <th scope="col">BKO CQV</th>
+          <th scope="col">Data Criação</th>
+          <th scope="col">BKO Criação</th>
+          <th scope="col">Data Aceite</th>
+          <th scope="col">BKO Aceite</th>
+          <th scope="col">Data Input</th>
+          <th scope="col">BKO Input</th>
+          <th scope="col">Data PN salvo</th>
+          <th scope="col">PN Salvo</th>
+          <th scope="col">ID</th>
+          <th scope="col">Data atualizado</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for pedido in page_obj %}
+          <tr>
+            <td tabindex="0" class="id-check"> <input type="checkbox" name="selected_pedido" value="{{ pedido.pk }}"></td>
+            <td tabindex="0" class="id" scope="row" style="min-width: 30px;" >{{ forloop.counter }}</td>
+            <td tabindex="0" data-coluna="carimbo_data_hora" class="text-field" data-type="text">{{ pedido.carimbo_data_hora|date:"d/m/Y H:i"|default:"" }}</td>
+            <td tabindex="0" data-coluna="equipe" class="text-field" >{{ pedido.equipe|default:"" }}</td>
+            <td tabindex="0" data-coluna="consultor" class="text-field" data-type="text">{{ pedido.consultor|default:""}}</td>
+            <td tabindex="0" data-coluna="cargo" class="text-field">{{ pedido.cargo|default:""}}</td>
+            <td tabindex="0" data-coluna="data" data-type="input">
+              <input type="date" value="{{ pedido.data|date:'Y-m-d'|default:'' }}" data-coluna="data" class="input-field" disabled>
+            </td>
+            <td tabindex="0" data-coluna="atividade" class="text-field" data-type="text">{{ pedido.atividade|default:"" }}</td>
+            <td tabindex="0" data-coluna="cnpj" class="text-field" data-type="text">{{ pedido.cnpj|default:"" }}</td>
+            <td tabindex="0" data-coluna="razao_social" class="text-field" data-type="text">{{ pedido.razao_social|default:"" }}</td>
+            <td tabindex="0" data-coluna="familia_produto" class="text-field">{{ pedido.familia_produto|default:"" }}</td>
+            <td tabindex="0" data-coluna="status" class="text-field">{{ pedido.status|default:"" }}</td>
+            <td tabindex="0" data-coluna="status_pn" class="text-field">{{ pedido.status_pn|default:"" }}</td>
+            <td tabindex="0" data-coluna="produto" class="text-field">{{ pedido.produto|default:""}} </td>
+            <td tabindex="0" data-coluna="qtd" data-type="input">
+                <input type="number" data-coluna="qtd" value="{{ pedido.qtd|default:0 }}" class="input-field" style="max-width: 110px;" disabled>
+            </td>
+            <td tabindex="0" data-coluna="valor" class="text-field" data-type="text">{{ pedido.valor|default:0 }}</td>
+            <td tabindex="0" data-coluna="motivo_cancelamento" class="text-field" data-type="text">{{ pedido.motivo_cancelamento|default:"" }}</td>
+            <td tabindex="0" data-coluna="simulacao" class="text-field" data-type="text">{{ pedido.simulacao|default:"" }}</td>
+            <td tabindex="0" data-coluna="cotacao" class="text-field" data-type="text">{{ pedido.cotacao|default:"" }}</td>
+            <td tabindex="0" data-coluna="pedido" class="text-field" data-type="text">{{ pedido.pedido|default:"" }}</td>
+            <td tabindex="0" data-coluna="credito" class="text-field" data-type="text">{{ pedido.credito|default:"" }}</td>
+            <td tabindex="0" data-coluna="bko_reprovado" class="text-field" data-type="text">{{ pedido.bko_reprovado|default:"" }}</td>
+            <td tabindex="0" data-coluna="data_ativacao" class="text-field" data-type="text">{{ pedido.data_ativacao|date:"d/m/Y"|default:"" }}</td>
+            <td tabindex="0" data-coluna="tipo_agenda" class="text-field" data-type="text">{{ pedido.tipo_agenda|default:"" }}</td>
+            <td tabindex="0" data-coluna="data_agenda" class="text-field">{{ pedido.data_agenda|date:"d/m/Y"|default:""}}</td>
+            <td tabindex="0" data-coluna="hora_agenda" class="text-field">{{ pedido.hora_agenda|default:""}}</td>
+            <td tabindex="0" data-coluna="campanha" class="text-field">{{ pedido.campanha|default:""}}</td>
+            <td tabindex="0" data-coluna="data_campanha" class="text-field">{{ pedido.data_campanha|default:""}}</td>
+            <td tabindex="0" data-coluna="nome_gestor" class="text-field" data-type="text">{{ pedido.nome_gestor|default:"" }}</td>
+            <td tabindex="0" data-coluna="celular_gestor" class="text-field" title="Ctrl+Clique" data-type="text">{{ pedido.celular_gestor|default:"" }}</td>
+            <td tabindex="0" data-coluna="email_gestor" class="text-field" data-type="text">{{ pedido.email_gestor|default:"" }}</td>
+            <td tabindex="0" data-coluna="observacao_1" class="text-field" data-type="text">{{ pedido.observacao_1|default:"" }}</td>
+            <td tabindex="0" data-coluna="observacao_2" class="text-field" data-type="text">{{ pedido.observacao_2|default:"" }}</td>
+            <td tabindex="0" data-coluna="data_cqv" class="text-field" data-type="text">{{ pedido.data_cqv|date:"d/m/Y"|default:"" }}</td>
+            <td tabindex="0" data-coluna="bko_cqv" class="text-field" data-type="text">{{ pedido.bko_cqv|default:"" }}</td>
+            <td tabindex="0" data-coluna="data_criacao" class="text-field" data-type="text">{{ pedido.data_criacao|date:"d/m/Y"|default:"" }}</td>
+            <td tabindex="0" data-coluna="bko_criacao" class="text-field" data-type="text">{{ pedido.bko_criacao|default:"" }}</td>
+            <td tabindex="0" data-coluna="data_aceite" class="text-field" data-type="text">{{ pedido.data_aceite|date:"d/m/Y"|default:"" }}</td>
+            <td tabindex="0" data-coluna="bko_aceite" class="text-field" data-type="text">{{ pedido.bko_aceite|default:"" }}</td>
+            <td tabindex="0" data-coluna="data_input" class="text-field" data-type="text">{{ pedido.data_input|date:"d/m/Y"|default:"" }}</td>
+            <td tabindex="0" data-coluna="bko_input" class="text-field" data-type="text">{{ pedido.bko_input|default:"" }}</td>
+            <td tabindex="0" data-coluna="data_pn_salvo" class="text-field" data-type="text">{{ pedido.data_pn_salvo|date:"d/m/Y"|default:"" }}</td>
+            <td tabindex="0" data-coluna="pn_salvo" class="text-field" data-type="text">{{ pedido.pn_salvo|default:"" }}</td>
+            <td tabindex="0" data-coluna="id" class="text-field" data-type="text">{{ pedido.pk }}</td>
+            <td tabindex="0" data-coluna="data_hora_atualizado_status" data-type="input">
+              <input type="datetime-local" value="{{ pedido.data_hora_atualizado_status|date:'Y-m-d H:i:s'|default:'' }}" data-coluna="data_hora_atualizado_status" class="input-field" disabled>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+      
+    </table>
+  </div>
+  <div id="snackbar">Mensagem!</div>
+    <div class="pagination" style="position: fixed; bottom: 5px; left: 42%;">
+      <span class="step-links">
+          {% if page_obj.has_previous %}
+              <a href="?page=1" class="key"><i class="fa-solid fa-backward-fast"></i></a>
+              <a href="?page={{ page_obj.previous_page_number }}" class="key"><i class="fa-solid fa-backward-step"></i></a>
+          {% else %}
+              <a href="" class="key disabled"><i class="fa-solid fa-backward-fast"></i></a>
+              <a href="" class="key disabled"><i class="fa-solid fa-backward-step"></i></a>
+          {% endif %}
+
+          {% if page_obj.paginator.num_pages > 5 %}
+              {% for i in page_obj.paginator.page_range %}
+                  {% if page_obj.number == i %}
+                      <span class="current key">
+                          {{ i }}
+                      </span>
+                  {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %}
+                      <a href="?page={{ i }}" class="key">{{ i }}</a>
+                  {% endif %}
+              {% endfor %}
+          {% else %}
+              {% for i in page_obj.paginator.page_range %}
+                  {% if page_obj.number == i %}
+                      <span class="current key">
+                          {{ i }}
+                      </span>
+                  {% else %}
+                      <a href="?page={{ i }}" class="key">{{ i }}</a>
+                  {% endif %}
+              {% endfor %}
+          {% endif %}
+
+          {% if page_obj.has_next %}
+              <a href="?page={{ page_obj.next_page_number }}" class="key"><i class="fa-solid fa-forward-step"></i></a>
+              <a href="?page={{ page_obj.paginator.num_pages }}" class="key"><i class="fa-solid fa-forward-fast"></i></a>
+          {% else %}
+              <a href="" class="key disabled"><i class="fa-solid fa-forward-step"></i></a>
+              <a href="" class="key disabled"><i class="fa-solid fa-forward-fast"></i></a>
+          {% endif %}
+      </span>
+    </div>
+</Body>
+
+
+<script>
+  function showSnackbar(message, type) {
+            snackbar.innerText = message;
+            snackbar.classList.add('show');
+            snackbar.classList.add(type);
+            
+            setTimeout(function () {
+                snackbar.classList.remove('show');
+                snackbar.classList.add(type);
+                snackbar.classList.remove('success', 'error');
+            }, 3000);
+        }
+
+  function moverFoco(novaLinha, novaColuna) {
+      var tabelaPedidos = $('#tabela-pedidos');
+      var totalLinhas = tabelaPedidos.find('tr').length;
+      var totalColunas = tabelaPedidos.find('th').length;
+    
+      novaLinha = Math.max(0, Math.min(novaLinha, totalLinhas - 1));
+      novaColuna = Math.max(0, Math.min(novaColuna, totalColunas - 1));
+
+      var novaCelula = tabelaPedidos.find('tr').eq(novaLinha).find('td').eq(novaColuna);
+
+      if (novaCelula.length > 0) {
+        novaCelula.focus();
+      }
+    }
+
+</script>
+
+<script>
+
+  function pedidosRestaurarExcluir(pedidoIds, salvar) {
+    $.ajax({
+      type: 'POST',
+      url: '/pedidos-deletados/',
+      data: {
+        'pedido_ids[]': pedidoIds,
+        'salvar': salvar, 
+        'csrfmiddlewaretoken': '{{ csrf_token }}'
+      },
+      traditional: true, 
+      success: function(response) {
+        console.log(response);
+        location.reload();
+      },
+      error: function (xhr, status, error) {
+        console.error('Erro ao excluir pedidos:', error);
+      }
+    });
+  }
+
+  $('#restaurarLinhas').on('click', function() {
+    var selectedCheckboxes = $('input[name="selected_pedido"]:checked');
+    var count = selectedCheckboxes.length;
+    if (count > 0) {
+      $('#restore-count').text(count);
+      $('#restore-confirmation').show();
+    } else {
+      alert('Nenhum pedido selecionado para excluir.');
+    }
+  });
+
+  $('#confirm-restore').on('click', function() {
+    var selectedCheckboxes = $('input[name="selected_pedido"]:checked');
+    var selectedIds = selectedCheckboxes.map(function() {
+      return this.value;
+    }).get();
+
+    pedidosRestaurarExcluir(selectedIds, true);
+
+    $('#restore-confirmation').hide();
+  });
+
+  $('#cancel-restore').on('click', function() {
+    $('#restore-confirmation').hide();
+  });
+
+  $('#excluirlinhas').on('click', function () {
+    var selectedCheckboxes = $('input[name="selected_pedido"]:checked');
+    var count = selectedCheckboxes.length;
+    if (count > 0) {
+      $('#restore-count').text(count);
+      $('#delete-confirmation').show();
+    } else {
+      alert('Nenhum pedido selecionado para excluir.');
+    }
+  });
+
+  $('#confirm-delete').on('click', function () {
+    var selectedCheckboxes = $('input[name="selected_pedido"]:checked');
+    var selectedIds = selectedCheckboxes.map(function () {
+      return this.value;
+    }).get();
+
+    pedidosRestaurarExcluir(selectedIds, false);
+
+    $('#delete-confirmation').hide();
+  });
+
+  $('#cancel-delete').on('click', function () {
+    $('#delete-confirmation').hide();
+  });
+</script>
+
+<script>
+  $(document).ready(function() {
+
+    moverFoco(1, 2);
+
+
+    $('#tabela-pedidos td').on('keydown', function(event) {
+
+      if (event.ctrlKey && event.key === 'c') {
+        var textoCelula = $(this).text();
+        textoCopiado = textoCelula;
+
+        var clipboardElement = document.createElement('textarea');
+        clipboardElement.value = textoCopiado;
+        document.body.appendChild(clipboardElement);
+        clipboardElement.select();
+        document.execCommand('copy');
+        document.body.removeChild(clipboardElement);
+
+        event.preventDefault();
+      }
+
+      if (event.keyCode >= 38 && event.keyCode <= 40) {
+            event.preventDefault();
+      }
+
+      if (event.keyCode === 13) {
+        event.preventDefault();
+
+        var indexColuna = $(this).index();  
+
+        if (indexColuna === 1) {
+          var checkbox = $(this).find('[name="selected_pedido"]');
+          checkbox.prop('checked', !checkbox.prop('checked'));
+          updateDeleteButtonState();
+        }
+
+        var proximaLinha = $(this).closest('#tabela-pedidos tr').next('tr');  
+
+        if (proximaLinha.length > 0) {
+          var proximoTD = proximaLinha.find('td').eq(indexColuna);  
+
+          if (proximoTD.length > 0) {
+            proximoTD.focus();
+          }
+        }
+      }
+
+      var indexLinha = $(this).closest('#tabela-pedidos tr').index() + 1;
+      var indexColuna = $(this).index();
+      var inicioColuna = 3;
+
+      if (event.ctrlKey) {
+        switch (event.key) {
+          case 'ArrowUp':
+            moverFoco(1, indexColuna); 
+            break;
+          case 'ArrowDown':
+            moverFoco($('tr').length - 1, indexColuna);
+            break;
+          case 'ArrowLeft':
+            moverFoco(indexLinha, inicioColuna); 
+            break;
+          case 'ArrowRight':
+            moverFoco(indexLinha, $('th').length - 1);
+            break;
+          case 'Home':
+            moverFoco(1, inicioColuna);
+            break;
+          case 'End':
+            moverFoco($('tr').length - 1, $('th').length - 1);
+            break;
+        }
+      } else {
+        switch (event.key) {
+          case 'ArrowUp':
+            moverFoco(indexLinha - 1, indexColuna);
+            break;
+          case 'ArrowDown':
+            moverFoco(indexLinha + 1, indexColuna);
+            break;
+          case 'ArrowLeft':
+            moverFoco(indexLinha, indexColuna - 1);
+            break;
+          case 'ArrowRight':
+            moverFoco(indexLinha, indexColuna + 1);
+            break;
+        }}
+    });
+  });
+</script>
+
+<script>
+  function exportarPedidos() {
+    var tableData = getTableData("tabela-pedidos");
+    var fields = Object.keys(tableData[0]);
+
+    var csvData = Papa.unparse({
+        fields: fields,
+        data: tableData
+    }, {
+        delimiter: ";"
+    });
+
+    var csvDataWithBOM = "\uFEFF" + csvData;
+    var blob = new Blob([csvDataWithBOM], { type: "text/csv;charset=ISO-8859-15;" });
+    var link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "pedidos_deletados.csv";
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  function getTableData(tableId) {
+    var data = [];
+    var table = document.getElementById(tableId);
+    var headers = table.querySelectorAll("thead th");
+    var rows = table.querySelectorAll("tbody tr");
+
+    rows.forEach(function (row) {
+        var rowData = {};
+        var cellsArray = Array.from(row.cells);
+        cellsArray.forEach(function (cell, index) {
+            var headerText = headers[index].innerText;
+            var cellType = cell.dataset.type;
+
+            if (cellType === 'text') {
+                rowData[headerText] = cell.innerText;
+            } else if (cellType === 'input') {
+                rowData[headerText] = cell.querySelector("input").value;
+            } else if (cellType === 'select') {
+                rowData[headerText] = getSelectedText(cell.querySelector("select"));
+            }
+        });
+
+        data.push(rowData);
+    });
+    return data;
+  }
+
+  function getSelectedText(selectElement) {
+      if (!selectElement) {
+          return "";
+      }
+      var selectedOption = selectElement.options[selectElement.selectedIndex];
+      return selectedOption ? selectedOption.text : "";
+  }
+
+  $('#exportButton').on('click', function() {
+    $('#export-confirmation').show();
+  });
+
+  $('#confirm-export').on('click', function() {
+    exportarPedidos();
+    $('#export-confirmation').hide();
+  });
+
+  $('#cancel-export').on('click', function() {
+    $('#export-confirmation').hide();
+  });
+</script>
+
+<script>
+  function selectAll() {
+    var checkboxes = document.querySelectorAll('[name="selected_pedido"]');
+    var selectAllCheckbox = document.getElementById('select-all');
+    for (var i = 0; i < checkboxes.length; i++) {
+      checkboxes[i].checked = selectAllCheckbox.checked;
+    }
+  }
+  function updateDeleteButtonState() {
+      var deleteButton = document.getElementById('excluirlinhas');
+      var restoreButton = document.getElementById('restaurarLinhas');
+      var checkedCheckboxes = document.querySelectorAll('[name="selected_pedido"]:checked');
+
+      deleteButton.disabled = checkedCheckboxes.length === 0;
+      restoreButton.disabled = checkedCheckboxes.length === 0;
+    }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var selectAllCheckbox = document.getElementById('select-all');
+    var checkboxes = document.querySelectorAll('[name="selected_pedido"]');
+
+    selectAllCheckbox.addEventListener('change', function () {
+      for (var i = 0; i < checkboxes.length; i++) {
+        checkboxes[i].checked = selectAllCheckbox.checked;
+      }
+      updateDeleteButtonState();
+    });
+
+    for (var i = 0; i < checkboxes.length; i++) {
+      checkboxes[i].addEventListener('change', function () {
+        var checkedCheckboxes = document.querySelectorAll('[name="selected_pedido"]:checked');
+        selectAllCheckbox.checked = checkedCheckboxes.length === checkboxes.length;
+        updateDeleteButtonState();
+      });
+    }
+
+  });
+</script>
+
+
+<script>
+  $(document).ready(function () {
+    $('#tabela-pedidos th i').click(function () {
+        var table = $(this).closest('table');
+        var rows = table.find('tbody > tr').toArray().sort(comparator($(this).index()));
+
+        rows = rows.reverse();
+
+        for (var i = 0; i < rows.length; i++) {
+            table.find('tbody').append(rows[i]);
+        }
+
+        showSnackbar("Lista ordenada!", 'success');
+    });
+
+    function comparator(index) {
+        return function (a, b) {
+            var valA = getCellValue(a, index);
+            var valB = getCellValue(b, index);
+
+            return valA.toString().localeCompare(valB);
+        };
+    }
+
+    function getCellValue(row, index) {
+        return $(row).children('td').eq(index).text();
+    }
+});
+
+</script>
+
+<script>
+  var whatsappCells = document.querySelectorAll('[data-coluna="celular_gestor"]');
+  
+  whatsappCells.forEach(function(cell) {
+    cell.addEventListener('click', function(event) {
+
+      if (event.ctrlKey || event.metaKey) {
+        var whatsappNumber = this.textContent.trim(); 
+        
+        if (!whatsappNumber.startsWith('+')) {
+          whatsappNumber = '+55' + whatsappNumber;
+        }
+        var cleanedNumber = whatsappNumber.replace(/[\.\-\+\s\(\)]/g, '');
+
+        if (cleanedNumber.length > 13) {
+          showSnackbar("Verificar formatação: +55 00 98888-7777", 'error')
+        }else{
+          var whatsappLink = 'https://wa.me/' + cleanedNumber;
+          window.open(whatsappLink, '_blank');
+        }
+      }
+    });
+  });
+</script>
+
+{% endblock %}
+

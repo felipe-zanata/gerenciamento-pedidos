@@ -1,0 +1,269 @@
+@import url(../../../static/css/estilos_gerais.css);
+  
+/* ----- */
+/* Corpo */
+/* ----- */
+body {
+    font-family: var(--fonte-geral);
+    background-color: var(--cor-background-body);
+    overflow: hidden;
+}
+
+/* -------------------------------- */
+/* Botões upload, import e carregar */
+/* -------------------------------- */
+.botoes-geral {
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 100px 0 30px 0;
+    background-color: var(--cor-background-body);
+}
+
+#carregarExcelForm{
+  display: flex;
+}
+
+button {
+    background-color: var(--botoes-pedidos);
+    color: var(--cor-escrita-botao);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    justify-content: space-between;
+}
+
+button:hover {
+    background-color: var(--botoes-pedidos-hover);
+}
+
+.botao-centralizar {
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+}
+
+.custom-file-upload {
+    background-color: var(--botoes-pedidos);
+    color: var(--cor-escrita-botao);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    justify-content: center;
+    max-width: 200px;
+    min-width: 200px;
+}
+
+.custom-file-upload:hover {
+    background-color: var(--botoes-pedidos-hover);
+}
+
+.upload-arquivo, .importar-dados{
+    margin-right: 10px;
+    justify-content: center;
+    display: flex;
+    margin-top: 4px;
+}
+
+.upload-arquivo-label {
+    background-color: var(--botao-upload);
+    max-width: 200px;
+    min-width: 200px;
+    margin-right: 20px;
+}
+
+.upload-arquivo-label:hover {
+    background-color: var(--botao-upload-hover);
+}
+
+.importar-dados-botao {
+    position: relative;
+    max-width: 200px;
+    min-width: 200px;
+    background-color: var(--botao-import);
+}
+
+.importar-dados-botao:hover {
+    background-color: var(--botao-import-hover);
+}
+
+.tipo-data{
+  border-radius: 5px;
+  border: 1px solid;
+  text-align: center;
+  max-width: 150px;
+  min-width: 150px;
+}
+
+.nome-arq-carregado {
+  text-align: center;
+  border: 1px solid;
+  margin-inline: 20px;
+  border-radius: 5px;
+  max-width: 300px;
+  min-width: 300px;
+}
+
+.disabled-button {
+    background-color: var(--botao-desabilitado);
+    pointer-events: none;
+}
+
+.progress-container{
+  margin: 0 auto; 
+  width: 50%; 
+  padding: 10px;
+}
+
+#table-container{
+    display: flex;
+    position: relative;
+    justify-content: center;
+    width: auto;
+    max-height: 70vh;
+    overflow: auto;
+}
+
+#table-logger {
+    width: 55%;
+}
+
+#table-logger thead {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    background-color: var(--fundo-tabela-th);
+    white-space: nowrap;
+    color: var(--cor-fonte-th);
+    text-align: center;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+#table-logger td,
+#table-logger th {
+  position: relative;
+  margin: 0 auto;
+  text-align: center;
+  font-size: 14px;
+  padding: 10px;
+  border-left: 1px dotted var(--borda-vertical);
+}
+
+#table-logger td{
+  background-color: var(--cor-fundo-tabela-td);
+  border-bottom: 1px solid var(--borda-bottom);
+  color: var(--cor-texto);
+  vertical-align: middle;
+  padding: 10px;
+  user-select: text;
+}
+
+
+/* ------ */
+/* Pop Up */
+/* ------ */
+.import-popup {
+    position: absolute;
+    background-color: var(--cor-branco-popup);
+    border: 1px solid var(--borda-popup);
+    border-radius: 5px;
+    padding: 10px;
+    z-index: 10;
+    top: 150px;
+    box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.3);
+  }
+
+  .btn {
+    display: inline-block;
+    text-align: center;
+    background-color: var(--botoes-pedidos);
+    color: var(--cor-escrita-botao);
+    border: none;
+    height: 100%;
+    width: auto;
+    padding: 5px 10px;
+    margin: auto 5px;
+    font-size: small ;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.3s ease-in-out;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  .btn:hover {
+    color: var(--cor-escrita-botao);
+    background-color: var(--botoes-pedidos-hover);
+    box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.3);  
+  }
+  
+  .btn i {
+    margin-right: 5px;
+  }
+  
+  .btn-inverse {
+    display: inline-block;
+    text-align: center;
+    background-color: var(--cor-escrita-botao);
+    color: var(--botoes-pedidos);
+    border: var(--botoes-pedidos);
+    height: 100%;
+    width: auto;
+    padding: 5px 10px;
+    margin: auto 5px;
+    font-size: small ;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.3s ease-in-out;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  .btn-inverse:hover {
+    color: var(--cor-escrita-botao);
+    background-color: var(--botoes-pedidos-hover);
+    box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.3);
+  }
+  
+  .btn-inverse i {
+    margin-right: 5px;
+  }
+
+/* ----- */
+/* Snack */
+/* ----- */
+#snackbar {
+    visibility: hidden;
+    min-width: 250px;
+    background-color: rgb(55, 71, 79);
+    color: var(--snack-fundo);
+    text-align: center;
+    border-radius: 2px;
+    padding: 10px;
+    position: fixed;
+    z-index: 1;
+    left: 40%;
+    bottom: 20px;
+    font-size: small;
+    }
+
+    #snackbar.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    }
+
+    #snackbar.success {
+    background-color: var(--snack-sucesso);
+    }
+
+    #snackbar.error {
+    background-color:  var(--snack-error);
+    }

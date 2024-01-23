@@ -1,0 +1,135 @@
+/* Geral */
+:root {
+  /* Cores */
+  --cor-primaria: #6087A8;
+  --cor-secundaria: #38546b;
+  --cor-texto: #333;
+  --cor-subtexto: #71717A;
+  --cor-preto: #000000;
+  --cor-fundo: #d8ebf7;
+  --cor-branco: #fff;
+  --cor-background-body: rgba(235, 245, 254, 0.5);
+
+  /* Fontes */
+  --fonte-base: 'Montserrat-Medium', sans-serif; 
+  --fonte-heading: 'Montserrat-Bold', sans-serif;
+  --fonte-geral: 'Montserrat-Regular', sans-serif;
+  --cor-fonte-geral: black;
+
+
+  /* Tamanhos */
+  --tamanho-fonte-base: 20px;
+  --tamanho-heading1: 2em;
+  --tamanho-heading2: 1.5em;
+  --tamanho-heading3: 1.2em;
+
+  /* Espaçamentos */
+  --espacamento-vertical: 1em;
+  --espacamento-horizontal: 0.5em;
+}
+
+/* Botão */
+:root{
+  --cor-principal-botao: #2c4283;
+  --cor-hover-botao: #4d66ae;
+  --cor-escrita-botao: #FAFAFA;
+
+  --cor-resetar-senha-botao: #2c428342;
+
+  --botoes-pedidos: #0D47A1;
+  --botoes-pedidos-hover: #1976D2;
+}
+
+/* Estilos do input */
+:root {
+  --cor-input-fundo: rgb(241, 240, 240);
+  --cor-input-texto: #fff;
+  --cor-input-hover: var(--cor-secundaria);
+  --cor-input-box-shadow: 0 0 3px 1px rgba(255, 255, 255, 0.5);
+  --cor-input-border-focus: rgba(128, 152, 249, 0.50);
+
+  --borda-input: 1px solid rgb(128, 152, 249);
+  --border-radius-input: 5px;
+
+  --espacamento-input: 10px;
+  --altura-input: 30px;
+  --altura-input-registrar: 45px;
+}
+
+/* Tabelas */
+:root {
+  --borda-vertical: rgb(236, 239, 241);
+  --borda-bottom: rgba(216, 217, 218, 0.886);
+
+  --fundo-tabela-th: #0d48a1;
+  --cor-fonte-th: #fff;
+
+  --cor-fundo-tabela-td: #fff;
+  --tamanho-fonte-id: 10px;
+  --tamanho-fonte-geral: 0.8em;
+
+  --cor-tabela-foco: #f0f0f0;
+
+  --cor-bg-opcoes-select: #fff;
+  --cor-fonte-select: #333;
+}
+
+/* Criar Pedidos */
+:root {
+  --cor-background-head: #fff;
+
+  --borda-cima: #2c4283;
+  --box-shadow: #00000033;
+
+  --cor-alerta: red;
+  --msg-erro: #d9534f;
+
+  --borda-input: #ddd;
+  --input-selecionado: #0096c7;
+
+  --borda-custom-radio: yellow;
+  --cor-custom-radio: #50cd23;
+  --cor-custom-radio-marcado: #2c4283;
+  --cor-linha-header: rgb(226, 222, 247);
+}
+
+/* Power BI */
+:root {
+  --bg-menu-pb: #fff;;
+  --sombra-menu-pb: rgba(0, 0, 0, 0.66);
+  --borda-menu-pb: #ccc;
+  --label-input: #333;
+}
+
+/* Pop Up */
+:root {
+  --borda-popup: #ddd;
+  --cor-branco-popup: #fff;
+}
+
+/* Select */
+:root {
+  --borda-select: #ccc;
+}
+
+/* SnackBar */
+:root {
+  --snack-copiar: #0D47A1;
+  --snack-fundo: #fff;
+  --snack-sucesso: rgb(0, 105, 92);
+  --snack-error: rgb(198, 40, 40);
+}
+
+/* Botões Upload, Carregar dados e Importar dados */
+:root {
+  --botao-upload: green;
+  --botao-upload-hover: rgb(3, 188, 3);
+
+  --botao-carregar: rgb(3, 168, 168);
+  --botao-carregar-hover: rgb(3, 221, 221);
+
+  --botao-import: red;
+  --botao-import-hover: rgb(175, 98, 98);
+
+  --botao-desabilitado: #ccc;
+}

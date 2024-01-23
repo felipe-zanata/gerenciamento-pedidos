@@ -1,0 +1,279 @@
+@import url(../../../static/css/estilos_gerais.css);
+
+/* --------- */
+/* Cabeçalho */
+/* --------- */
+h1 {
+    text-align: center;
+    font-size: var(--tamanho-heading1);
+    font-family: var(--fonte-heading);
+    margin-top: 100px;
+}
+
+body {
+    top: 0;
+    font-family: var(--fonte-geral);
+    background-color: var(--cor-background-body);
+    overflow: hidden;
+    height: 100vh;
+}
+
+/* ----------------- */
+/* Formatação tabela */
+/* ----------------- */
+.formatar {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 auto;
+    align-items: center;
+    padding: 10px;
+    height: 20%;
+}
+
+.pb-existente {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    width: 55%;
+    margin: 0 auto;
+    overflow-y: auto;
+    max-height: 50vh;
+    max-width: 90%;
+    overflow-x: auto;
+}
+
+.tabela-pb {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.tabela-pb th, .tabela-pb td {
+    border: 2px solid var(--borda-vertical);
+    background-color: var(--cor-fundo-tabela-td);
+    padding: 8px;
+    text-align: center;
+    font-size: var(--tamanho-fonte-geral);
+}
+
+.tabela-pb th {
+    background-color: var(--fundo-tabela-th);
+    color: var(--cor-fonte-th);
+}
+
+.tabela-pb thead {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);   
+}
+
+.tabela-pb .indicator-url {
+    max-width: 400px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+/* ---------------- */
+/* Formatação Botão */
+/* ---------------- */
+.add-ind {
+    background-color: var(--botoes-pedidos);
+    color: var(--cor-escrita-botao);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.add-ind:hover {
+    background-color: var(--botoes-pedidos-hover);
+}
+
+.delete {
+    background-color: var(--cor-branco);
+    color: var(--botoes-pedidos);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.delete:hover {
+    color: var(--botoes-pedidos-hover);
+}
+
+button {
+    background-color: var(--cor-branco);
+    color: var(--botoes-pedidos);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    color: var(--botoes-pedidos-hover);
+}
+
+/* ------ */
+/* Pop Up */
+/* ------ */
+.delete-popup {
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    z-index: 10;
+    display: block;
+    box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.3);
+  }
+
+  .btn {
+    display: inline-block;
+    text-align: center;
+    background-color: var(--botoes-pedidos);
+    color: var(--cor-escrita-botao);
+    border: none;
+    height: 100%;
+    width: auto;
+    padding: 5px 10px;
+    margin: auto 5px;
+    font-size: small ;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.3s ease-in-out;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  .btn:hover {
+    color: var(--cor-escrita-botao);
+    background-color: var(--botoes-pedidos-hover);
+    box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.3);  
+  }
+  
+  .btn i {
+    margin-right: 5px;
+  }
+  
+  .btn-inverse {
+    display: inline-block;
+    text-align: center;
+    background-color: var(--cor-escrita-botao);
+    color: var(--botoes-pedidos);
+    border: var(--botoes-pedidos);
+    height: 100%;
+    width: auto;
+    padding: 5px 10px;
+    margin: auto 5px;
+    font-size: small ;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.3s ease-in-out;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  .btn-inverse:hover {
+    color: var(--cor-escrita-botao);
+    background-color: var(--botoes-pedidos-hover);
+    box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.3);
+  }
+  
+  .btn-inverse i {
+    margin-right: 5px;
+  }
+
+/* ----------------- */
+/* Formatação Inputs */
+/* ----------------- */
+.dados-input {
+    width: 25%;
+    padding: var(--espacamento-input);
+    margin-block: 10px;
+    border: var(--borda-input);
+    background: var(--cor-input-fundo);
+    border-radius: var(--border-radius-input);
+    outline: none;
+    height: var(--altura-input-registrar);
+  }
+
+  .dados-select select {
+    width: 100%;
+    height: var(--altura-input-registrar);
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    margin-block: 10px;
+    background: var(--cor-input-fundo);
+  }
+  
+  input {
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    border: none;
+    outline: none;
+  }
+
+  .dados-input:focus {
+    border-color: var(--cor-input-border-focus);
+    box-shadow: var(--cor-input-box-shadow);
+  }
+
+input {
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    border: none;
+    outline: none;
+  }
+
+/* ------------------ */
+/* Msg ao copiar link */
+/* ------------------ */
+#snackbar {
+    visibility: hidden;
+    min-width: 250px;
+    background-color: var(--snack-copiar);
+    color: var(--snack-fundo);
+    text-align: center;
+    border-radius: 2px;
+    padding: 10px;
+    position: fixed;
+    z-index: 1;
+    left: 50px;
+    bottom: 30px;
+    font-size: small;
+}
+
+#snackbar.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+/* -------------- */
+/* Responsividade */
+/* -------------- */
+@media screen and (max-width: 768px) {
+    .pb-existente .formatar {
+        width: 100%;
+    }
+    .pb-existente {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+        width: 55%;
+        margin: 0 auto;
+        overflow-y: auto;
+        max-height: 50vh;
+    }
+}

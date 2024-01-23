@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prime</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" rel="stylesheet">
+    {% load static %}
+    <link href="{% static '../static/css/base.css' %}" rel="stylesheet">
+    <link href="{% static 'css/custom-fonts.css' %}" rel="stylesheet">
+    <link rel="shortcut icon" href="{%  static 'favicon.ico' %}">
+</head>
+<body>
+<div class="page-height">
+    <div class="page" style="position: fixed; width: 100%; top: 0; left: 0; z-index: 1000;">
+        <nav class="page__menu menu">
+            <ul class="menu__list r-list" style="display: flex; justify-content: flex-start; list-style: none; margin: 0; padding: 0;">
+                <img src="{% static 'logo_prime.png' %}" alt="Prime">
+                
+                {% if user.is_authenticated %}
+                <li class="menu__group">
+                    <a href="/pedidos/" class="menu__link r-link text-underlined">
+                        <i class="fa-solid fa-table-list" style="padding: 4px 10px;"></i>
+                        Pedidos
+                    </a>
+                </li>
+
+                <li class="menu__group">
+                    <a href="/criar_pedido/" class="menu__link r-link text-underlined">
+                        <i class="fa fa-square-plus" style="padding: 4px 10px;"></i>
+                        Cadastrar Pedidos
+                    </a>
+                </li>
+
+                <li class="menu__group">
+                    <a href="/indicador/" class="menu__link r-link text-underlined">
+                        <i class="fa fa-area-chart" style="padding: 4px 10px;"></i>
+                        Power BI
+                    </a>
+                </li>
+
+                <li class="menu__group" style="margin-left: auto;">
+                    <div class="dropdown">
+                        <a class="menu__link r-link dropdown-toggle" id="userMenu">
+                            <i class="fa fa-user" style="padding: 4px 10px;"></i> 
+                            Olá, {{ user.first_name }} 
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="userMenu">
+                            {% if user.is_authenticated %}
+                                {% for group in user.groups.all %}
+                                    {% if group.name == "Master" or group.name == "Gerente" %}
+                                        <a class="dropdown-item" href="/admin/">
+                                            <i class="fa-solid fa-user-tie"></i>Administrador
+                                        </a>
+                                        <a class="dropdown-item" href="/registrar/">
+                                            <i class="fa-solid fa-user-tie"></i>Cadastrar Usuários
+                                        </a>
+                                        <a class="dropdown-item" href="/users/">
+                                            <i class="fa-solid fa-user-gear"></i>Gerenciar Usuários
+                                        </a>
+                                        <a class="dropdown-item" href="/import/">
+                                            <i class="fa-solid fa-file-arrow-up"></i>Importar Dados
+                                        </a>
+                                        <a class="dropdown-item" href="/pedidos-deletados/">
+                                            <i class="fa-regular fa-calendar-xmark"></i>Pedidos Deletados
+                                        </a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+
+                            {% if user.is_authenticated %}
+                                {% for group in user.groups.all %}
+                                    {% if group.name == "Master" %}
+                                        <a class="dropdown-item" href="/lista_indicador/">
+                                            <i class="fa-solid fa-chart-line"></i>Cadastrar Indicadores
+                                        </a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                            <hr class="custom-divider"> 
+                            <a class="dropdown-item" href="{% url 'logout' %}">
+                                <i class="fa-solid fa-arrow-right-from-bracket"></i>Sair
+                            </a>
+                        </div>
+                    </div>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    <div class="content" >
+        {% block content %}
+        
+        {% endblock %}
+    </div>
+</div>
+</body>
+</html>
+
+

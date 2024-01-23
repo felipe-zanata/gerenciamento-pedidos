@@ -1,0 +1,443 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="{% static '../static/css/pedido_create.css' %}" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <div class="img-svg">
+      <img src="{% static 'img_form.png' %}" alt="a" class="img-head">
+    </div>
+    <form method="post" id="criar_form" onsubmit="return validarFormulario()">
+        {% csrf_token %}
+        <div class="div-form-head">
+          <h1>FORMULÁRIO DE PEDIDO</h1> 
+          <hr>
+          <p class="alerta">* Indica uma pergunta obrigatória</p>
+        </div>
+        
+        <div class="div-form">
+          <div class="half-div">
+            <div>
+              <label for="atividade" class="required">Atividade</label>
+              <input type="number" id="atividade" name="atividade" class="obrigatorio">
+              <div class="error-message">Campo obrigatório</div>
+            </div>
+          </div>
+                
+          <div class="half-div">
+            <label for="consultor" class="required">consultor</label>
+            <select id="consultor" name="consultor" style="font-size: medium; max-width: 90%;">
+                {% for consultor_id, consultor_nome in consultores %}
+                    <option value="{{ consultor_nome }}" {% if consultor_nome == request.user.first_name|add:' '|add:request.user.last_name %}selected{% endif %}>
+                        {{ consultor_nome }}
+                    </option>
+                {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="div-form">
+
+          <div class="custom-radio-group half-div" >
+            <label class="required">Cargo</label>
+            {% for cargo_option in form.fields.cargo.queryset %}
+                <div class="custom-radio-option">
+                  {% if forloop.first %}
+                    <input type="radio" id="id_cargo_{{ cargo_option.id }}" name="cargo" value="{{ cargo_option.id }}" class="custom-radio-input" checked>
+                    <label for="cargo">{{ cargo_option }}</label>
+                  {% else %}
+                    <input type="radio" id="id_cargo_{{ cargo_option.id }}" name="cargo" value="{{ cargo_option.id }}" class="custom-radio-input">
+                    <label for="cargo">{{ cargo_option }}</label>
+                  {% endif %}
+                </div>
+            {% endfor %}
+          </div>
+          
+          <div class="custom-radio-group half-div">
+            <label class="required">Equipe</label>
+            {% for equipe_option in form.fields.equipe.queryset %}
+              <div class="custom-radio-option">
+                {% if forloop.first %}
+                  <input type="radio" id="id_equipe_{{ equipe_option.id }}" name="equipe" value="{{ equipe_option.id }}" class="custom-radio-input" checked>
+                  <label for="equipe">{{ equipe_option }}</label>
+                {% else %}
+                  <input type="radio" id="id_equipe_{{ equipe_option.id }}" name="equipe" value="{{ equipe_option.id }}" class="custom-radio-input">
+                  <label for="equipe">{{ equipe_option }}</label>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+          
+        </div>
+
+        <div class="div-form">
+
+          <div class="custom-radio-group half-div">
+            <div>
+              <label for="data" class="required">DATA</label>
+              <input type="date" id="data" name="data" class="obrigatorio" onchange="validarData()">
+              <div class="error-message">Campo obrigatório</div>
+            </div>
+
+            <div style="display: none;">
+              <label for="carimbo_data_hora" class="required">Carimbo</label>
+              <input type="datetime-local" id="carimbo_data_hora" name="carimbo_data_hora" class="obrigatorio">
+              <div class="error-message">Campo obrigatório</div>
+            </div>
+            
+            <div>
+              <label for="email_gestor" class="required">Email do Gestor</label>
+              <input type="email" id="email_gestor" name="email_gestor" class="obrigatorio" oninput="this.value = this.value.toUpperCase();">
+              <div class="error-message">Campo obrigatório</div>
+            </div>
+          </div>
+
+          <div class="half-div">
+            <div>
+              <label for="nome_gestor" class="required">Nome do Gestor</label>
+              <input type="text" id="nome_gestor" name="nome_gestor" class="obrigatorio" oninput="this.value = this.value.toUpperCase();">
+              <div class="error-message">Campo obrigatório</div>
+            </div>
+            <div>
+              <label for="celular_gestor" class="required">Celular do Gestor</label>
+              <input type="text" id="celular_gestor" name="celular_gestor" class="obrigatorio" oninput="formatCelular(this)">
+              <div class="error-message">Número de celular inválido</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="div-form">
+          <div class="half-div">
+            <div>
+              <label for="cnpj" class="required">CNPJ</label>
+              <input type="text" id="cnpj" name="cnpj" class="obrigatorio" onkeyup="formatCNPJ(this)">
+              <div class="error-message">Campo obrigatório</div>
+            </div>
+            <div>
+              <label for="razao_social" class="required">Razão Social</label>
+              <input type="text" id="razao_social" name="razao_social" class="obrigatorio"  oninput="this.value = this.value.toUpperCase();">
+              <div class="error-message">Campo obrigatório</div>
+            </div>
+          </div>
+          <div class="half-div">
+            <label class="required">UF</label>
+            {% for uf_option in form.fields.uf.queryset %}
+              {% if uf_option.id != 1 %}
+                <div class="custom-radio-option">
+                  {% if uf_option.uf == "RS" %}
+                    <input type="radio" id="id_uf_{{ uf_option.id }}" name="uf" value="{{ uf_option.id }}" class="custom-radio-input" checked>
+                    <label for="uf">{{ uf_option }}</label>
+                  {% else %}
+                    <input type="radio" id="id_uf_{{ uf_option.id }}" name="uf" value="{{ uf_option.id }}" class="custom-radio-input">
+                    <label for="uf">{{ uf_option }}</label>
+                  {% endif %}
+                </div>
+              {% endif %} 
+            {% endfor %}
+
+          </div>
+
+        </div>
+
+        <div class="div-form">
+          <div class="custom-radio-group half-div">
+            <label class="required">FAMÍLIA DE PRODUTOS</label>
+            {% for familia_produto_option in form.fields.familia_produto.queryset %}
+              {% if familia_produto_option.id != 1 %}
+                <div class="custom-radio-option">
+                  {% if familia_produto_option.familia_produto == "MÓVEL" %}
+                    <input type="radio" id="id_familia_produto_{{ familia_produto_option.id }}" name="familia_produto" value="{{ familia_produto_option.id }}" class="custom-radio-input" checked>
+                    <label for="familia_produto">{{ familia_produto_option}}</label>
+                  {% else %}
+                    <input type="radio" id="id_familia_produto_{{ familia_produto_option.id }}" name="familia_produto" value="{{ familia_produto_option.id }}" class="custom-radio-input">
+                    <label for="familia_produto">{{ familia_produto_option}}</label>
+                  {% endif %}
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>        
+
+          <div class="half-div">
+            <label for="produto" class="required">Produto</label>
+            <select id="produto" name="produto" size="8" style="font-size: medium; max-width: 90%;">
+              {% for produto_option in form.fields.produto.queryset %}
+                {% if forloop.first %}
+                  <option value="{{produto_option.id}}" selected>{{produto_option}}</option>
+                {% else %}
+                  <option value="{{produto_option.id}}">{{produto_option}}</option>
+                {% endif %}
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="div-form" >
+
+          <div class="half-div">
+            <label for="status" class="required">Status</label>
+            <select id="status" name="status" size="7" style="font-size: medium;">
+              {% for status_option in form.fields.status.queryset %}
+                {% if status_option.descricao_status == "CRIAR PEDIDO" or status_option.descricao_status == "CQV" %}
+                  {% if status_option.descricao_status == "CRIAR PEDIDO" %}
+                    <option value="{{ status_option.id }}" selected>{{ status_option }}</option>
+                  {% else %}
+                    <option value="{{ status_option.id }}">{{ status_option }}</option>
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+            </select>
+          </div>
+
+          <div style="display: none;">
+            <label for="status_pn">Status PN<label>
+            <select id="status_pn" name="status_pn" size="7" style="font-size: medium;">
+              {% for status_pn_option in form.fields.status_pn.queryset %}
+                {% if status_pn_option.id == 1 %}
+                  <option value="{{ status_pn_option.id }}" selected>{{ status_pn_option }}</option>
+                {% else %}
+                  <option value="{{ status_pn_option.id }}">{{ status_pn_option }}</option>
+                  {% endif %}
+              {% endfor %}
+            </select>
+          </div>
+          
+          <div class="half-div">
+            <label for="campanha" class="required">campanha</label>
+            <select id="campanha" name="campanha" size="7" style="font-size: medium;">
+              {% for campanha_option in form.fields.campanha.queryset %}
+                {% if forloop.first %}
+                  <option value="{{ campanha_option.id }}" selected>{{ campanha_option }}</option>
+                {% else %}
+                  <option value="{{ campanha_option.id }}">{{ campanha_option }}</option>
+                {% endif %}
+              {% endfor %}
+            </select>
+          </div>
+
+        </div>
+        <div class="div-form" style="display: none;">
+
+          <div class="half-div">
+            <label for="motivo_cancelamento" class="required">Motivo cancelamento</label>
+            <select id="motivo_cancelamento" name="motivo_cancelamento" size="7" style="font-size: medium;">
+              {% for motivo_cancelamento_option in form.fields.motivo_cancelamento.queryset %}
+                {% if forloop.first %}
+                  <option value="{{ motivo_cancelamento_option.id }}" selected>{{ motivo_cancelamento_option }}</option>
+                {% else %}
+                  <option value="{{ motivo_cancelamento_option.id }}">{{ motivo_cancelamento_option }}</option>
+                {% endif %}
+              {% endfor %}
+            </select>
+          </div>
+
+          <div>
+            <label for="bko_reprovado">BKO Reprovado</label>
+            <select id="bko_reprovado" name="bko_reprovado" size="7" style="font-size: medium;">
+              {% for bko_reprovado_option in form.fields.bko_reprovado.queryset %}
+                {% if forloop.first %}
+                  <option value="{{ bko_reprovado_option.id }}" selected>{{ bko_reprovado_option }}</option>
+                {% else %}
+                  <option value="{{ bko_reprovado_option.id }}">{{ bko_reprovado_option }}</option>
+                  {% endif %}
+              {% endfor %}
+            </select>
+          </div>
+          
+          <div class="half-div">
+            <label for="observacao_1" class="required">Observação 1</label>
+            <select id="observacao_1" name="observacao_1" size="7" style="font-size: medium;">
+              {% for observacao_option in form.fields.observacao_1.queryset %}
+                {% if forloop.first %}
+                  <option value="{{ observacao_option.id }}" selected>{{ observacao_option }}</option>
+                {% else %}
+                  <option value="{{ observacao_option.id }}">{{ observacao_option }}</option>
+                {% endif %}
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="div-form" style="display: none;">
+
+          <div class="half-div">
+            <label for="credito" class="required">Crédito</label>
+            <select id="credito" name="credito" size="7" style="font-size: medium;">
+              {% for credito_option in form.fields.credito.queryset %}
+                {% if forloop.first %}
+                  <option value="{{ credito_option.id }}" selected>{{ credito_option }}</option>
+                {% else %}
+                  <option value="{{ credito_option.id }}">{{ credito_option }}</option>
+                {% endif %}
+              {% endfor %}
+            </select>
+          </div>
+
+          <div>
+            <label for="tipo_agenda">Tipo Agenda</label>
+            <select id="tipo_agenda" name="tipo_agenda" size="7" style="font-size: medium;">
+              {% for tipo_agenda_option in form.fields.tipo_agenda.queryset %}
+                {% if forloop.first %}
+                  <option value="{{ tipo_agenda_option.id }}" selected>{{ tipo_agenda_option }}</option>
+                {% else %}
+                  <option value="{{ tipo_agenda_option.id }}">{{ tipo_agenda_option }}</option>
+                  {% endif %}
+              {% endfor %}
+            </select>
+          </div>
+          
+          <div class="half-div">
+            <label for="observacao_2" class="required">Observação 2</label>
+            <select id="observacao_2" name="observacao_2" size="7" style="font-size: medium;">
+              {% for observacao_option in form.fields.observacao_2.queryset %}
+                {% if forloop.first %}
+                  <option value="{{ observacao_option.id }}" selected>{{ observacao_option }}</option>
+                {% else %}
+                  <option value="{{ observacao_option.id }}">{{ observacao_option }}</option>
+                {% endif %}
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="div-form">
+            <div class="half-div"> 
+              <label for="qtd" class="required">Quantidade</label>
+              <input type="number" id="qtd" name="qtd" class="obrigatorio">
+              <div class="error-message">Campo obrigatório</div>
+            </div>
+
+            <div class="half-div">
+              <label for="valor" class="required">Valor Bruto</label>
+              <input type="number" step="0.01" id="valor" name="valor" class="obrigatorio">
+              <div class="error-message">Campo obrigatório</div>
+          </div>
+        </div>
+        
+        <div class="div-form">
+            <div class="half-div">
+              <label for="simulacao">Nº Simulação</label>
+              <input type="number" id="simulacao" name="simulacao">
+              <div class="error-message">Campo obrigatório</div>
+            </div>
+
+            <div class="half-div">
+              <label for="pedido">Nº Pedido</label>
+              <input type="number" id="pedido" name="pedido" >
+              <div class="error-message">Campo obrigatório</div>
+            </div>
+        </div>
+        
+        <div class="buttons-container">
+            <input type="submit" value="Enviar" class="btn">
+            <input type="button" value="Limpar formulário" class="btn" onclick="limparCampos()">
+        </div>
+    </form>
+  </div>
+</body>
+</html>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const campos = document.querySelectorAll('.obrigatorio');
+
+    campos.forEach(function(campo) {
+      const errorMessage = campo.nextElementSibling;
+      campo.addEventListener('blur', function() {
+        if (this.value.trim() === '') {
+          this.classList.add('error');
+          errorMessage.style.display = 'block';
+        } else {
+          this.classList.remove('error');
+          errorMessage.style.display = 'none';
+        }
+      });
+    });
+  });
+
+  function limparCampos() {
+      const formulario = document.getElementById('criar_form');
+  
+      formulario.reset();
+  }
+
+  function validarFormulario() {
+    const camposObrigatorios = document.querySelectorAll('.obrigatorio');
+
+    for (let i = 0; i < camposObrigatorios.length; i++) {
+        if (camposObrigatorios[i].value === '') {
+            alert('Por favor, preencha todos os campos obrigatórios.');
+            return false;
+        }
+    }
+    return true;
+  }
+
+  function formatCNPJ(cnpjField) {
+      let cnpj = cnpjField.value.replace(/\D/g, '');
+      if (cnpj.length > 14) {
+          cnpj = cnpj.slice(0, 14); 
+      }
+      cnpj = cnpj.replace(/^(\d{2})(\d)/, '$1.$2');
+      cnpj = cnpj.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
+      cnpj = cnpj.replace(/\.(\d{3})(\d)/, '.$1/$2');
+      cnpj = cnpj.replace(/(\d{4})(\d)/, '$1-$2');
+      cnpjField.value = cnpj;
+  }
+
+  function formatCelular(celularField) {
+      let celular = celularField.value.replace(/\D/g, ''); 
+      celular = celular.slice(0, 13);
+      
+      celular = celular.replace(/^(\d{2})(\d)/g, '+$1 $2'); 
+      celular = celular.replace(/^(\+\d{2}) (\d{2})(\d)/g, '$1 ($2) $3'); 
+      celular = celular.replace(/(\d{5})(\d)/, '$1-$2'); 
+
+      celularField.value = celular;
+  }
+
+  function formatarMoeda(input) {
+      let valor = input.value;
+  
+      valor = valor.replace(/\D/g, '');
+  
+      valor = (valor / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  
+      input.value = valor;
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+      var today = new Date();
+      var day = today.getDate().toString().padStart(2, '0');;
+      var month = (today.getMonth() + 1).toString().padStart(2, '0');; 
+      var year = today.getFullYear();
+
+      var hours = today.getHours().toString().padStart(2, '0');
+      var minutes = today.getMinutes().toString().padStart(2, '0');
+
+      document.getElementById('data').value = year+"-"+month+"-01";
+      document.getElementById('carimbo_data_hora').value = year + "-" + month + "-" + day + " " + hours + ":" + minutes;
+
+  });
+</script>
+
+<script>
+  function validarData() {
+    var inputData = document.getElementById("data").value;
+    var dataSelecionada = new Date(inputData);
+    
+    if (dataSelecionada.getDate() !== 1) {
+      var primeiroDiaDoMes = new Date(dataSelecionada.getFullYear(), dataSelecionada.getMonth(), 1);
+      
+      document.getElementById("data").valueAsDate = primeiroDiaDoMes;
+    }
+  }
+
+</script>
+
+{% endblock %}

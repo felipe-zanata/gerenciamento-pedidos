@@ -1,0 +1,246 @@
+@import url(../../../static/css/estilos_gerais.css);
+
+/* -------------------------- */
+/* Div geral e responsividade */
+/* -------------------------- */
+.container {
+  max-width: 90%;
+  margin: 0 auto;
+  height: 92vh;
+  overflow: auto;
+}
+
+@media screen and (min-width: 768px) {
+  .container {
+    max-width: 75%;
+  }
+}
+
+@media screen and (min-width: 1100px) {
+  .container {
+    max-width: 65%;
+  }
+}
+
+@media screen and (min-width: 1300px) {
+  .container {
+    max-width: 55%;
+  }
+}
+
+/* ----- */
+/* Corpo */
+/* ----- */
+body {
+  background-color: var(--cor-background-body);
+  overflow: hidden;
+  font-family: var(--fonte-geral);
+}
+
+/* ---------- */
+/* Titulos h1 */
+/* ---------- */
+h1 h2{
+  font-size: x-large;
+  margin-bottom: 20px;
+  text-align: start;
+  font-family: var(--fonte-heading);
+  font-weight: bold;
+}
+
+h1 {
+  font-size: var(--tamanho-heading2);
+}
+
+/* ----------------- */
+/* Formatação imagem */
+/* ----------------- */
+.img-head {
+  height: auto;
+  width: 100%;
+  border-radius: 10px;
+}
+
+.img-svg {
+  margin: 5px;
+  margin-bottom: 10px;
+}
+
+/* -------------- */
+/* Div Instruções */
+/* -------------- */
+.div-form-head{
+  padding: 20px 40px;
+  background-color: var(--cor-background-head);
+  border-radius: 10px;
+  box-shadow: 0 2px 6px var(--box-shadow);
+  border-top: 15px solid var(--borda-cima);
+  margin: 5px;
+}
+
+/* ------------------- */
+/* Cards Pedidos geral */
+/* ------------------- */
+.div-form{
+  display: flex;
+  margin: 10px 5px;
+  padding: 20px;
+  background-color: var(--cor-background-head);
+  border-radius: 10px;
+  box-shadow:  0 2px 6px var(--box-shadow);
+}
+
+.half-div {
+  flex: 1;
+  width: 50%;
+  margin-inline: 5%;
+  box-sizing: border-box;
+}
+
+.div-form-head h2 {
+  font-size: medium;
+}
+
+.div-form label {
+  display: block;
+  margin-block: 5px;
+}
+
+label {
+  font-weight: bold;
+}
+
+/* -------------- */
+/* Estilos alerta */
+/* -------------- */
+.alerta {
+  font-size: medium;
+  color: var(--cor-alerta);
+}
+
+.error-message {
+  color: var(--msg-erro);
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+a {
+  text-decoration: none !important;
+}
+
+.required::after {
+  content:  ' *';
+  color: var(--cor-alerta);
+}
+
+.error-message {
+  display: none;
+  color: var(--cor-alerta);
+  margin-top: 5px;
+}
+
+.error {
+  border-bottom: 1px solid var(--cor-alerta) !important;
+}
+
+/* ---------------------- */
+/* Botões Cadastro/Limpar */
+/* ---------------------- */
+.buttons-container {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+  margin-bottom: 50px;
+}
+
+.btn {
+  display: inline-block;
+  background-color: var(--botoes-pedidos);
+  color: var(--cor-escrita-botao);
+  border: none;
+  width: auto;
+  min-width: 150px;
+  padding: 10px;
+  font-size: medium;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.btn:hover {
+  color: var(--cor-escrita-botao);
+  background-color: var(--botoes-pedidos-hover);
+}
+
+/* ---------------- */
+/* Marcadores Radio */
+/* ---------------- */
+.custom-radio-group {
+  display: flex;
+  flex-direction: column !important;
+  margin-bottom: 20px;
+}
+
+.custom-radio-option {
+  margin-bottom: 10px;
+  display: flex !important;
+  align-items: center;
+}
+
+.custom-radio-option label{
+  font-weight: normal !important;
+}
+
+.custom-radio-input {
+  background-color: var(--cor-alerta);
+  border: 1px solid var(--borda-custom-radio);
+  color: var(--cor-custom-radio);
+  margin-right: 10px;
+  width: 16px;
+  height: 16px; 
+}
+
+.custom-radio-input:checked + label {
+  color: var(--cor-custom-radio-marcado); 
+  font-weight: bold !important;
+}
+
+select option:checked {
+  color: var(--cor-background-head);
+  background-color: var(--cor-custom-radio-marcado);
+}
+
+/* ------ */
+/* Inputs */
+/* ------ */
+input[type="text"], input[type="number"], input[type="email"], input[type="date"], input[type="tel"],  select, textarea {
+  padding: 8px;
+  font-size: 14px;
+  border: none;
+  border-bottom: 2px solid var(--borda-input);
+  width: 100%;
+  min-width: 250px;
+  margin-bottom: 8px;
+  outline: none;
+}
+
+input[type="text"]:focus, input[type="number"]:focus, input[type="email"]:focus, input[type="date"]:focus, input[type="tel"]:focus, select:focus, textarea:focus {
+  outline: none;
+  border-bottom-color: var(--input-selecionado);
+}
+
+/* ---------- */
+/* Responsivo */
+/* ---------- */
+@media screen and (max-width: 1200px) {
+  input[type="text"], input[type="number"], input[type="email"], input[type="date"], input[type="tel"], select, textarea {
+    padding: 8px;
+    font-size: 14px;
+    border: none;
+    border-bottom: 2px solid var(--borda-input);
+    width: 100%;
+    min-width: unset;
+    margin-bottom: 8px;
+    outline: none;
+  }
+}

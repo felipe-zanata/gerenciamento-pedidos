@@ -1,0 +1,164 @@
+@import url(estilos_gerais.css);
+
+/* --------- */
+/* Cabeçalho */
+/* --------- */
+h1 {
+    text-align: center;
+    font-size: var(--tamanho-heading1);
+    font-family: var(--fonte-heading);
+    margin-top: 100px;
+}
+
+body {
+    top: 0;
+    font-family: var(--fonte-geral);
+    background-color: var(--cor-background-body);
+    overflow: hidden;
+    height: 100vh;
+}
+
+/* ----------------- */
+/* Formatação tabela */
+/* ----------------- */
+.tabela-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    margin: 0 auto;
+    width: 55%;
+    overflow-y: auto;
+    max-height: 70vh;
+}
+
+.tabela-user {
+    border-collapse: collapse;
+    width: 25%;
+    text-align: center;
+}
+
+.tabela-user th, .tabela-user td {
+    border: 2px solid var(--borda-vertical);
+    background-color: var(--cor-fundo-tabela-td);
+    padding: 8px;
+    text-align: center;
+    font-size: var(--tamanho-fonte-geral);
+    font-family: var(--fonte-geral) !important;
+}
+
+.tabela-user th {
+    background-color: var(--fundo-tabela-th);
+    color: var(--cor-fonte-th);
+    white-space: nowrap;
+}
+
+.tabela-user thead {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);   
+}
+
+/* -------------------- */
+/* Botão Editar/Excluir */
+/* -------------------- */
+.botao-del-editar {
+    background-color: var(--cor-branco);
+    color: var(--botoes-pedidos);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.botao-del-editar:hover {
+    color: var(--botoes-pedidos-hover);
+}
+
+i {
+    font-size: 20px;
+}
+
+button {
+    background-color: var(--cor-branco);
+    color: var(--botoes-pedidos);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    color: var(--botoes-pedidos-hover);
+}
+
+/* ------ */
+/* Pop Up */
+/* ------ */
+.delete-popup {
+    position: absolute;
+    background-color: var(--cor-branco-popup);
+    border: 1px solid var(--borda-popup);
+    border-radius: 5px;
+    padding: 10px;
+    z-index: 10;
+    display: block;
+    box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.3);
+  }
+
+  .btn {
+    display: inline-block;
+    text-align: center;
+    background-color: var(--botoes-pedidos);
+    color: var(--cor-escrita-botao);
+    border: none;
+    height: 100%;
+    width: auto;
+    padding: 5px 10px;
+    margin: auto 5px;
+    font-size: small ;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.3s ease-in-out;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  .btn:hover {
+    color: var(--cor-escrita-botao);
+    background-color: var(--botoes-pedidos-hover);
+    box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.3);  
+  }
+  
+  .btn i {
+    margin-right: 5px;
+  }
+  
+  .btn-inverse {
+    display: inline-block;
+    text-align: center;
+    background-color: var(--cor-escrita-botao);
+    color: var(--botoes-pedidos);
+    border: var(--botoes-pedidos);
+    height: 100%;
+    width: auto;
+    padding: 5px 10px;
+    margin: auto 5px;
+    font-size: small ;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.3s ease-in-out;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  .btn-inverse:hover {
+    color: var(--cor-escrita-botao);
+    background-color: var(--botoes-pedidos-hover);
+    box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.3);
+  }
+  
+  .btn-inverse i {
+    margin-right: 5px;
+  }

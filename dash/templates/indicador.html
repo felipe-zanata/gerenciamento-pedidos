@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% load static %}
+        <link href="{% static '../static/css/indicador.css' %}" rel="stylesheet">
+        <title>Dashboard</title>
+    </head>
+
+<body>
+    <div class="caixa">
+        <div class="indicador-wrapper">
+            <div class="arrow-wrapper">
+                <button class="nav-arrow left-arrow" onclick="previousIndicator()">❮</button>
+                <span id="indicatorName" class="indicator-name"></span>
+                <button class="nav-arrow right-arrow" onclick="nextIndicator()">❯</button>
+            </div>
+        </div>
+        <div class="menu-pb">
+            <div class="select-indic">
+                <select class="select-input" id="powerBiIndicator" onchange="atualizarRelatorioPorSelecao()">
+                    {% for indicator in indicators %}
+                        <option value="{{ indicator.url }}">{{ indicator.nome_dash|truncatechars:30 }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="indicador">
+        <iframe id="powerBiFrame" title="Capacity" width="70%" height="100%"
+        src=""
+        frameborder="0" allowFullScreen="true"></iframe>
+    </div>
+    
+    <script>
+        function getIndicatorUrls() {
+            var selector = document.getElementById("powerBiIndicator");
+            var urls = [];
+            for (var i = 0; i < selector.options.length; i++) {
+                urls.push(selector.options[i].value);
+            }
+            return urls;
+        }
+    
+        var currentIndicatorIndex = 0;
+    
+        function updateIndicator() {
+            var indicators = getIndicatorUrls();
+            var iframe = document.getElementById("powerBiFrame");
+            var selector = document.getElementById("powerBiIndicator");
+            iframe.src = indicators[currentIndicatorIndex];
+            document.getElementById("indicatorName").textContent = selector.options[currentIndicatorIndex].text;
+        }
+    
+        function updateSelection() {
+            var selector = document.getElementById("powerBiIndicator");
+            selector.selectedIndex = currentIndicatorIndex;
+            updateIndicator();
+        }
+    
+        function previousIndicator() {
+            var indicators = getIndicatorUrls();
+            if (currentIndicatorIndex > 0) {
+                currentIndicatorIndex--;
+            } else {
+                currentIndicatorIndex = indicators.length - 1;
+            }
+            updateSelection();
+        }
+    
+        function nextIndicator() {
+            var indicators = getIndicatorUrls();
+            if (currentIndicatorIndex < indicators.length - 1) {
+                currentIndicatorIndex++;
+            } else {
+                currentIndicatorIndex = 0;
+            }
+            updateSelection();
+        }
+    
+        function atualizarRelatorioPorBotao() {
+            var novoSrc = document.getElementById("powerBiUrl").value;
+            document.getElementById("powerBiFrame").src = novoSrc;
+        }
+    
+        function atualizarRelatorioPorSelecao() {
+            var selector = document.getElementById("powerBiIndicator");
+            var selectedOptionText = selector.options[selector.selectedIndex].text;
+            var selectedOptionValue = selector.value;
+    
+            document.getElementById("powerBiFrame").src = selectedOptionValue;
+            document.getElementById("indicatorName").textContent = selectedOptionText;
+        }
+    
+        window.onload = function() {
+            atualizarRelatorioPorSelecao();
+        };
+    </script>
+    
+
+</body>
+</html>
+
+{% endblock %}

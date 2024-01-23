@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% load static %}
+        <link href="{% static '../static/css/indicador_create.css' %}" rel="stylesheet">
+        <title>Dashboard</title>
+    </head>
+    
+    <body>
+        <h1>Adicionar Indicador PowerBI</h1>
+            <div class="formatar">
+                <form method="post" class="formatar">
+                    {% csrf_token %}
+                    <input class="dados-input" type="text" name="nome_dash" id="name" placeholder="Nome Indicador" required>
+                    <div class="dados-select">
+                    <select name="group" id="id_group">
+                        {% for group in groups %}
+                            <option value="{{ group.id }}">{{ group.name }}</option>
+                        {% endfor %}
+                    </select>
+                    </div>
+                    <input class="dados-input" type="url" name="url" id="id_url" placeholder="Link Indicador" required>
+                    <button class="add-ind" type="submit">Adicionar</button>
+                </form>
+            </div>
+        <div class="pb-existente">
+            <table class="tabela-pb">
+                <thead>
+                    <tr>
+                        <th>Nome Indicador</th>
+                        <th>Nível Acesso</th>
+                        <th>Link Indicador</th>
+                        <th>Excluir Indicador</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for indicator in indicators %}
+                        <tr>
+                            <td>{{ indicator.nome_dash }}</td>
+                            <td>{{ indicator.group.name }}</td>
+                            <td class="indicator-url urlField" title="{{ indicator.url }}">{{ indicator.url }}</td>
+                            <td>
+                                <button class="btn-icone excluir" data-indicator-id="{{ indicator.id_url }}">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <div class="delete-popup" style="display: none; left:45%" data-indicator-id="{{ indicator.id_url }}">
+                            <form method="post">
+                                <p>Deseja excluir este indicador?</p>
+                                {% csrf_token %}
+                                <input type="hidden" name="delete_id" value="{{ indicator.id_url }}">
+                                <button class="btn excluir-confirmar" type="submit" name="action" value="Excluir">
+                                    Sim, excluir
+                                </button>
+                            </form>
+                            <button class="btn-inverse cancel-delete">Cancelar</button>
+                        </div>
+                    {% endfor %}
+                </tbody>
+                
+            </table>
+        </div>
+    </body>
+    <div id="snackbar">Link copiado!</div>
+</html>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var urlFields = document.querySelectorAll(".urlField");
+        var snackbar = document.getElementById("snackbar");
+
+        urlFields.forEach(function (urlField) {
+            urlField.addEventListener("click", function () {
+                var urlValue = urlField.innerText;
+
+                snackbar.innerText = 'Link copiado: ' + urlValue;
+                snackbar.classList.add('show');
+
+                var dummyElement = document.createElement("textarea");
+                document.body.appendChild(dummyElement);
+                dummyElement.value = urlValue;
+                dummyElement.select();
+                document.execCommand("copy");
+                document.body.removeChild(dummyElement);
+
+                setTimeout(function () {
+                    snackbar.classList.remove('show');
+                }, 3000);
+            });
+        });
+    });
+</script>
+
+<script>
+document.querySelectorAll('.excluir').forEach(button => {
+    button.addEventListener('click', function() {
+        var indicatorId = this.getAttribute('data-indicator-id');
+        var popup = document.querySelector('.delete-popup[data-indicator-id="' + indicatorId + '"]');
+        var rect = this.getBoundingClientRect();
+        
+        // Cálculo do deslocamento
+        var deslocamentoX = 20;
+        var deslocamentoY = 0;
+
+        var newLeft = rect.left + window.scrollX + rect.width + deslocamentoX;
+        var newTop = rect.top + window.scrollY + deslocamentoY;
+
+        // Aplicando o deslocamento ao popup
+        popup.style.left = newLeft + 'px';
+        popup.style.top = newTop + 'px';
+
+        // Exibindo o popup
+        popup.style.display = 'block';
+    });
+});
+
+document.querySelectorAll('.cancel-delete').forEach(button => {
+    button.addEventListener('click', function() {
+        this.parentElement.style.display = 'none';
+    });
+});
+
+</script>
+{% endblock %}

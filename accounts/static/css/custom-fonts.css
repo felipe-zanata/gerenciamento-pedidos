@@ -1,0 +1,28 @@
+/* <link href="{% static 'css/custom-fonts.css' %}" rel="stylesheet"> */
+
+/* font-family: 'Montserrat-Italic', sans-serif; */
+/* font-family: 'OpenSans-Italic', sans-serif; */
+
+/* Fonte Base */
+@font-face {
+    font-family: 'Montserrat-Medium';
+    src: url('../fonts/Montserrat-Medium.ttf') format('truetype');
+    font-weight: normal;
+    /* font-style: italic; */
+}
+
+/* Fonte Heading */
+@font-face {
+    font-family: 'Montserrat-Bold';
+    src: url('../fonts/Montserrat-Bold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+}
+
+/* Fonte Geral */
+@font-face {
+    font-family: 'Montserrat-Regular';
+    src: url('../fonts/Montserrat-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+}

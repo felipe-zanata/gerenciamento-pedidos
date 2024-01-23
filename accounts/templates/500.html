@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+<head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Erro 500 - Erro Interno do Servidor</title>
+        <link href="{% static '../static/css/error.css' %}" rel="stylesheet">
+        <link rel="shortcut icon" href="{%  static 'favicon.ico' %}">
+    </head>
+</head>
+<body>
+    <h1>Erro 500: Erro Interno do Servidor</h1>
+    <p>Desculpe, algo deu errado do nosso lado.</p>
+    <a href="/">Voltar para a página inicial</a>
+</body>
+
+{% endblock %}

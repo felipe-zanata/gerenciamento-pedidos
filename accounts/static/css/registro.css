@@ -1,0 +1,196 @@
+@import url(estilos_gerais.css);
+
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: var(--fonte-geral) !important;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ----------------- */
+/* Card de Registro  */
+/* ----------------- */
+.geral {
+  display: flex;
+  height: 100%;
+}
+
+.card-registro {
+  flex: 1;
+  width: 50%;
+  margin-top: 2.5%;
+  display: flex;
+  justify-content: center;
+}
+
+/* ------------------- */
+/* Formulário Registro */
+/* ------------------- */
+.registro-container{
+  padding: 30px 50px;
+  background-color: var(--cor-branco);
+  border-radius: 5px;
+  border-color: var(--borda-input);
+  box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+  max-height: 80vh;
+}
+
+.registro-form {
+  display: flex;
+  flex-direction: column;
+  width: 350px;
+}
+
+.messages {
+  list-style-type: none;
+  padding: 10px;
+  font-size: small;
+  color: var(--msg-erro);
+}
+
+/* ---------------- */
+/* Formatação Input */
+/* ---------------- */
+.dados-input {
+  width: 100%;
+  border: var(--borda-input);
+  background: var(--cor-input-fundo);
+  border-radius: var(--border-radius-input);
+  outline: none;
+  height: var(--altura-input-registrar);
+}
+
+.second-name-label {
+  width: 85%;
+  outline: none;
+  margin-left: 30px;
+}
+
+.second-name{
+  width: 85%;
+  border: var(--borda-input);
+  background: var(--cor-input-fundo);
+  border-radius: var(--border-radius-input);
+  outline: none;
+  height: var(--altura-input-registrar);
+  margin-left: 30px;
+}
+
+.dados-input:focus {
+  border-color: var(--cor-input-border-focus);
+  box-shadow: var(--cor-input-box-shadow);
+}
+
+.dados-select select {
+  width: 100%;
+  height: 40px;
+  border: 1px solid var(--borda-select);
+  border-radius: 5px;
+  outline: none;
+  background: var(--cor-input-fundo);
+}
+
+input {
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  border: none;
+  outline: none;
+}
+
+/* ------------ */
+/* Botão Login */
+/* ------------ */
+.registrar-button-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.registrar-button {
+  margin: 0 auto;
+  font-size: medium;
+  margin-top: 10px;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  width: 100%;
+  background-color: var(--cor-principal-botao);
+  color: var(--cor-escrita-botao);
+  cursor: pointer;
+  outline: none;
+}
+
+.registrar-button:hover {
+  background-color: var(--cor-hover-botao);
+}
+
+/* ------------ */
+/* Botão Voltar */
+/* ------------ */
+.voltar {
+  margin: 5px;
+  font-size: medium;
+  text-align: center;
+  padding: 10px;
+  text-decoration: none;
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  width: 50%;
+  background-color: var(--cor-principal-botao);
+  color: var(--cor-escrita-botao);
+  cursor: pointer;
+  outline: none;
+}
+
+.voltar:hover {
+  background-color: var(--cor-hover-botao);
+  transition: background-color 0.3s ease-in-out;
+}
+
+/* ----------------- */
+/* h4 Cadastrar User */
+/* ----------------- */
+h4 {
+  margin-top: -20px;
+  font-family: var(--fonte-heading);
+  font-size: var(--tamanho-heading1);
+  text-align: center;
+}
+
+/* -------------- */
+/* Responsividade */
+/* -------------- */
+@media screen and (max-width: 768px) {
+  .card-registro, .registro-container, .registro-form {
+    width: 100%;
+    padding: 15px;
+  }
+
+  .second-name, .second-name-label {
+    width: 90%;
+    margin-left: 10px;
+  }
+
+  .login-button {
+    padding: 10px 20px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 5px;
+    width: 100%;
+    cursor: pointer;
+    outline: none;
+    height: 50px;
+  }
+}
+
+.dados-input button{
+  position: fixed;
+  margin-top: 0.5%;
+  border: none;
+  background-color: transparent;
+  margin-left: -2%;
+}
