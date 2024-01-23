@@ -110,5 +110,3 @@ Este projeto está licenciado - veja o arquivo LICENSE.md para detalhes.
 ## Contato
 
 Conntext Hub - contact@conntexthub.com
-
-Link do Projeto: [prime-telefonia](https://github.com/ConntextHub/prime-telefonia)
