@@ -1,4 +1,4 @@
-# Sistema de Gerenciamento de Pedidos - Prime Telefonia
+# Sistema de Gerenciamento de Pedidos
 
 ## Sobre o Projeto
 
